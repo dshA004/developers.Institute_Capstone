@@ -1,0 +1,88 @@
+This contains all libraries that I will/might need.
+"How" to use them.
+Step by step instruction on how to do the project.
+
+Goal: To built a mini Ai assistant that helps to: 
+- that summarises pdfs
+- that answers questions about the pdfs
+
+
+Dataset: 3 short pdfs
+1) How Sleep Affects Memory, Learning & Mental Health 
+2) Social responsibility in Business ==> from "study driver"
+3) 1 short poem 
+
+
+what to do?
+- extract text from pdfs 
+==> PyPDF2: used to read, manipulate pdf
+
+- Chunk the new text (e.g., 200–500 tokens per chunk) 
+          ?? create new "file.txt"??
+
+==> NLTK: CHECK OUT NLP_Basics.ipynb
+NLP (natural language processing) - breaking text into smaller pieces
+                # Install spaCy (if not already installed)
+                !pip install -U spacy
+                # Download the large English model
+                !python -m spacy download en_core_web_sm
+
+                import nltk
+                from nltk.stem import PorterStemmer
+                from nltk.tokenize import word_tokenize, sent_tokenize
+                from nltk.corpus import stopwords
+                import spacy
+
+CounterVectorizer for BOW:
+                from sklearn.feature_extraction.text import CountVectorizer
+
+TF-IDF (Term Frequency-Inverse Document Frequency):
+                from sklearn.feature_extraction.text import TfidfVectorizer
+
+
+Deep learning embeddings ==> Word2Vec, GloVe, FastText
+                !pip install nltk gensim
+                from nltk.tokenize import word_tokenize
+                from gensim.models import Word2Vec
+                import gensim.downloader as api
+                from sklearn.metrics.pairwise import cosine_similarity
+                from gensim.models import FastText
+
+GloVe: ===> give you most similar word from a chosen word
+                glove = api.load("glove-wiki-gigaword-100")
+- Clean and normalize each chunk (remove headers, footers, whitespace) 
+
+
+
+
+Generate Embeddings:
+    ! pip install sentence-transformers 
+    ==> generate embeddings for each text chunk.
+    ==> converted into vectos so that AI can measure similarity when being asked quesitons
+    ! pip install openai
+    ==> used to call an LLM for text generation (summaries, answerss)
+    ! pip install huggingface
+
+- are numerical representations of text = turn words, sentences, 
+                                          or paragraphs into vectors (lists of numbers)
+==> openAI
+                from openai import OpenAI
+==> huggingface
+                from sentence_transformers import SentenceTransformer
+
+Indexing(RAG):
+- stores the embeddings
+- RAG = Retrieval-Augmented Generation Retrieval – finding the most relevant "topics" using embeddings.
+   -- used for Q&A
+                Augmented Generation – feeding those "topics" to a language model (LLM) 
+                to generate accurate, context-aware answers.
+        ! pip install llama_index -- create an index of chunks for RAG
+        ! pip install pinecone  ?????
+        ! pip langchain
+
+                from llama_index import SimpleDirectoryReader, GPTVectorStoreIndex
+
+
+
+                pip install evaluate numpy pandas streamlit
+Wrap everything as a streamlit app

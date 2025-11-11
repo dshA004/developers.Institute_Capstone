@@ -1,0 +1,39 @@
+MOST WILL BE copy paste ideas from class (e.g notes from certain classes)
+
+Goal:
+To try to create a mini Ai that helps us to understand a given text/pdfs.
+
+Problem Definition & Research :
+Goal - help to summarize the given contents/texts
+==> create easy-to-understand summarises.
+Problem - some people find it difficult to read long paragraphs/texts. some people find it easier to learn by answering questions
+Solution -  
+==> summarize the contents, 
+==> create Q&A for better learning/assismilation of the chosen contents
+
+Will have
+- 2 short articles
+==> 1) How Sleep Affects Memory, Learning & Mental Health
+==> 2) Social responsibility in Business
+- 1 short poem 
+==> 
+
+--- Wrap everything as a streamlit app
+
+| ------------------------------------------------------------------------------------------------------------------------------------------------ |
+
+OR:-
+
+Project Idea:
+To create a mini Ai / Bot that learns from only 1 short pdf/article that is about only 1 specific topic.
+
+Goals: 
+- To summarize the topic
+- To learn from from it and be able to answer any given question about the topic 
+
+
+e.g:- an article about "Different types of dinosaur"
+e.g: - MUA policy handbook travel insurance
+
+ 
+
