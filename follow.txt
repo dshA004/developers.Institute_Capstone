@@ -7,10 +7,10 @@ Goal: To built a mini Ai assistant that helps to:
 - that answers questions about the pdfs
 
 
-Dataset: 3 short pdfs
+Dataset: 2 short pdfs
 1) How Sleep Affects Memory, Learning & Mental Health 
 2) Social responsibility in Business ==> from "study driver"
-3) 1 short poem 
+ 
 
 
 what to do?
