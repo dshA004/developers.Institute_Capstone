@@ -8,7 +8,7 @@ That can answer questions about 2 given pdfs
 Problem Definition & Research :
 Goal - help to summarize the given contents/texts
 ==> create easy-to-understand summarises.
-Problem - some people find it difficult to read long paragraphs/texts. some people find it easier to learn by answering questions
+Problem - some people find it difficult to read long paragraphs/texts/large files with lots of pages. Some people find it easier to learn/understand by answering questions or if the files are summarised for them.
 Solution -  
 ==> summarize the contents, 
 ==> create Q&A for better learning/assismilation of the chosen contents
@@ -34,7 +34,7 @@ Goals:
 
 
 e.g:- an article about "Different types of dinosaur"
-e.g: - MUA policy handbook travel insurance
+
 
  
 
