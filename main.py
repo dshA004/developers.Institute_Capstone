@@ -49,3 +49,30 @@ for i, pdf in enumerate(pdf2_reads):
     print(f"\n--- Page/Chunk {i+1} ---\n")
     print(pdf.text)
 
+
+# ----------------------------------------------------------------------------------------- #
+# step 2: clean the extracted pdf, create a folder called new_folder to put the cleaned .txt
+
+import re
+
+def clean(text):
+    text = re.sub(r"\s+", " ", text)
+    text = re.sub(r"[^\x00-\x7F]+", " ", text)
+    return text.strip()
+
+pdf1_full = "\n".join([doc.text for doc in pdf1_reads])
+pdf2_full = "\n".join([doc.text for doc in pdf2_reads])
+
+# create the new folder for the new .txt
+os.makedirs("clean_files", exist_ok=True)
+
+pdf1_clean = clean(pdf1_full)
+pdf2_clean = clean(pdf2_full)
+
+with open("clean_files/file1.txt", "w", encoding="utf-8") as f:
+    f.write(pdf1_clean)
+
+with open("clean_files/file2.txt", "w", encoding="utf-8") as f:
+    f.write(pdf2_clean)
+
+print("Clean files created successfully!")
