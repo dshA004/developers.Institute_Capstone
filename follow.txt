@@ -1,26 +1,57 @@
 This contains all libraries that I will/might need.
 "How" to use them.
 Step by step instruction on how to do the project.
+The notes/ libraries are from classes' notes
 
 Goal: To built a mini Ai assistant that helps to: 
 - that summarises pdfs
 - that answers questions about the pdfs
+- maybe create questions for us
 
 
-Dataset: 3 short pdfs
-1) How Sleep Affects Memory, Learning & Mental Health 
-2) Social responsibility in Business ==> from "study driver"
-3) 1 short poem 
+Dataset: 2 short pdfs
+1) How Sleep Affects Memory, Learning & Mental Health ==> https://www.sciencenewstoday.org/how-sleep-affects-memory-and-learning
+2) Social responsibility in Business ==> https://www.geeksforgeeks.org/business-studies/social-responsibilities-of-a-business-and-its-need/
+
+
+
+Librairies needed:
+Text processing: document loading embeddings, Q&a
+==> llama_index
+
+
+
 
 
 what to do?
-- extract text from pdfs 
+1 - extract text from pdfs 
 ==> PyPDF2: used to read, manipulate pdf
 
-- Chunk the new text (e.g., 200–500 tokens per chunk) 
-          ?? create new "file.txt"??
 
-==> NLTK: CHECK OUT NLP_Basics.ipynb
+2 - Chunk the new text (e.g., 200–500 tokens per chunk) 
+          The pdfs must be split into smaller chunks
+==> use langchain
+
+
+3 - Embeddings + Vector Database  ==> ??? FAISS
+          store the "new" pdfs into a new "file.txt"
+          ?? create new "file.txt"?? -- embeddings
+
+
+4 - LLM Framework: LangChain OR LlamaIndex
+        summarize each pdfs
+        compare them 
+        answer the user' questions
+        maybe generate its own questions
+
+5 - choose a model
+ OpenAI API (GPT-4o, GPT-4.1, GPT-5)
+
+
+6 MAYBE
+        to compare similarity between the 2 pdfs
+
+==> NLTK: FROM NLP_Basics.ipynb
 NLP (natural language processing) - breaking text into smaller pieces
                 # Install spaCy (if not already installed)
                 !pip install -U spacy
@@ -32,6 +63,8 @@ NLP (natural language processing) - breaking text into smaller pieces
                 from nltk.tokenize import word_tokenize, sent_tokenize
                 from nltk.corpus import stopwords
                 import spacy
+
+
 
 CounterVectorizer for BOW:
                 from sklearn.feature_extraction.text import CountVectorizer
@@ -86,3 +119,33 @@ Indexing(RAG):
 
                 pip install evaluate numpy pandas streamlit
 Wrap everything as a streamlit app
+
+Deployment Streamlit app steps:
+
+We have our app in a virtual environment
+To create a virtual environment, go to the project root folder and open a terminal.
+Type in the command: 
+python -m venv <virtual environment name>
+
+
+Activate your virtual environment
+./<virtual environment name>/Scripts/Activate
+
+Install libraries
+
+Create the requirements.txt file (while virtual environment is still activated)
+
+Pip freeze > requirements.txt
+
+
+Create a file called .gitignore
+
+In this file add ./<virtualenvironment folder name>
+
+Push your code app (the necessary files including the requirements.txt) to a public github repository that you created
+
+The click on create app button after login:
+
+Select option deploy from github repo
+
+Fill in the configurations:
