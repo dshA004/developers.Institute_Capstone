@@ -2,7 +2,7 @@ MOST WILL BE copy paste ideas from class (e.g notes from certain classes)
 
 Goal:
 To try to create a mini Ai that helps us to understand a given text/pdfs.
-That can answer questions about 2 given pdfs
+That can answer questions asked by the user.
 
 
 Problem Definition & Research :
@@ -14,11 +14,10 @@ Solution -
 ==> create Q&A for better learning/assismilation of the chosen contents
 ==> let user ask questions about the material
 
-Will have
-- 2 short articles
+"""
 ==> 1) How Sleep Affects Memory, Learning & Mental Health
 ==> 2) Social responsibility in Business
-
+"""
 --- Wrap everything as a streamlit app
 
 | ------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -33,7 +32,7 @@ Goals:
 - To learn from from it and be able to answer any given question about the topic 
 
 
-e.g:- an article about "Different types of dinosaur"
+
 
 
  
