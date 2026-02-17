@@ -1,18 +1,6 @@
-# Python
+venv/
+.venv/
 __pycache__/
 *.pyc
-*.pyo
-*.pyd
-.venv/
-env/
-venv/
-
-# VSCode
-.vscode/
-
-# OS
-.DS_Store
-Thumbs.db
-
-# OneDrive leftovers
-*.tmp
+.streamlit/
+.env
