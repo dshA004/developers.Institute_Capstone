@@ -12,6 +12,13 @@ from langchain_groq import ChatGroq
 
 
 load_dotenv()
+# ----------------------------------------------------------------------------------- #
+
+st.set_page_config(
+        page_title="Mini PDF AI Assistant",
+        page_icon=":books:", 
+        layout="wide"
+        )
 
 # ------------------------------------------------------------------------------------- #
 # Initialization of state:
@@ -61,6 +68,8 @@ def get_chunks(text):
 # device = "cpu"  # force CPU
 embedding_model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
 client = Groq()
+GROQ_MODEL = "llama-3.3-70b-versatile"
+
 
 def create_faiss_index(chunks):
     if not chunks:
@@ -103,18 +112,6 @@ def search(query, top_k=5):
 #     return summarizer
 
 # summarizer = get_summarizer()
-# ---------------------------------------------------------------------------------------------------------------------- #
-
-
-def main():
-    # print("hello world")
-
-    st.set_page_config(
-        page_title="Mini PDF AI Assistant",
-        page_icon=":books:", 
-        layout="wide"
-        )
-
 
 # ---------------------------------------------------------------------------------------------------------------- #
 # MOVED AT THE TOP:
@@ -138,10 +135,12 @@ def main():
 # st.text_input("Ask a questions about the document!")
 
 with st.sidebar:
+    st.sidebar.title("Mini Study Buddy!") #  AI Assistant
+    st.sidebar.markdown("Summarize, Chat and Generate questions.")
     st.header("Upload PDFs")
 
     uploaded_files = st.file_uploader(
-                            "Upload your pdf(s)",
+                            "Upload PDF",
                            type = "pdf",
                             accept_multiple_files=True
                             )
@@ -149,14 +148,10 @@ with st.sidebar:
     # if st.button("Process"):
     #       with st.spinner("Proccessing"):
 process_button = st.sidebar.button("Process PDFs")
-
-st.sidebar.title("Mini Study Buddy!") #  AI Assistant
-st.sidebar.markdown("Upload PDFs, Summarize, Chat, and 'Generate questions'.")
 # ------------------------------------------------------------------------------- #
 
 # Main Page
-st.header("Summarise! and Q&A :books:")
-st.divider()
+st.header("Zola your mini Study AI Assistant:books:")
 # ------------------------------------------------------------------------------- # 
 
 # # get pdf text
@@ -176,9 +171,6 @@ st.divider()
 
 # ------------------------------------------------------------------------------------------------------------ #
 #  Summary:
-st.subheader("Summary Process")
-
-
 # if process_button:
 #    if uploaded_files:
 #                  st.info(f"Processing, please wait!")
@@ -211,8 +203,6 @@ if process_button:
 
         else:
             st.warning("Upload a PDF")
-else:
-        st.write("Upload PDFs and click 'Process PDFs'")
 
 st.divider()
 # --------------------------------------------------------------------------------------------------------------------------------------------------- #
@@ -264,7 +254,8 @@ if summarise_button:
 
             # st.info("Summarization coming soon via Groq!")
             response = client.chat.completions.create(
-                model="llama-3.3-70b-versatile",
+                # model="llama-3.3-70b-versatile",
+                model=GROQ_MODEL,
                 messages=[
                     {
                         "role": "system",
@@ -314,9 +305,25 @@ if ask_button:
     if st.session_state.chunks and st.session_state.embeddings is not None:
         with st.spinner("Searching for answer..."):
             results = search(user_question)
-            st.write("### Relevant chunks from PDFs:")
-            for i, res in enumerate(results):
-                st.write(f"{i+1}. {res}")
+            context = "\n".join(results)
+
+            response = client.chat.completions.create(
+                 model=GROQ_MODEL,
+                 messages=[
+                      {
+                        "role": "system",
+                        "content": "You are Zola, a helpful assistant that answers questions based on the provided document context."
+                    },
+                    {
+                        "role": "user",
+                        "content": f"Based on the following context:\n\n{context}\n\nAnswer this question: {user_question}"
+                    }
+                 ]
+
+            )
+            answer = response.choices[0].message.content
+            st.write("### Zola's answer:")
+            st.write(answer)
     else:
         st.warning("Upload PDFs and process them first.")
 # if ask_button:
@@ -332,20 +339,20 @@ st.divider()
 
 # -------------------------------------------------------------------------------------------------- #
 # Generate own Questions 
-# st.subheader("❓ Generated Questions")
-# generate_button = st.button("Generate Questions")
+st.subheader("❓ Generated Questions")
+generate_button = st.button("Generate Questions")
 
-# if generate_button:
-#             if uploaded_files:
-#              st.info("Processing, please wait!")
-# else:
-#              st.warning("Upload a pdf")
+if generate_button:
+     if st.session_state.chunks:
+          with st.spinner("Zola is generating questions..."):
+               st.info("Questions coming soon!")
+     else:
+          st.warning("Please do upload a PDF and Process again!")
 
 # ===> 
 # st.button("Generate Questions", disabled=True)
 
-if __name__ == '__main__':
-    main()
+
 
 
 
