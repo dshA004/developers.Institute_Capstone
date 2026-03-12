@@ -1,13 +1,17 @@
 import streamlit as st
 from pypdf import PdfReader
 from dotenv import load_dotenv
-from langchain.text_splitter import CharacterTextSplitter
+from langchain_text_splitters import CharacterTextSplitter
 from sentence_transformers import SentenceTransformer
 import faiss
 import numpy as np
-from transformers import pipeline
-import torch
+# from transformers import pipeline
+# import torch
+from groq import Groq
+from langchain_groq import ChatGroq
 
+
+load_dotenv()
 
 # ------------------------------------------------------------------------------------- #
 # Initialization of state:
@@ -54,11 +58,9 @@ def get_chunks(text):
 
 # -------------------------------------------------------------------------------------------------
 # Create embeddings and FAISS index
-# import torch
-device = "cpu"  # force CPU
+# device = "cpu"  # force CPU
 embedding_model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
-
-# embedding_model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
+client = Groq()
 
 def create_faiss_index(chunks):
     if not chunks:
@@ -105,8 +107,8 @@ def search(query, top_k=5):
 
 
 def main():
-    # load_dotenv()
     # print("hello world")
+
     st.set_page_config(
         page_title="Mini PDF AI Assistant",
         page_icon=":books:", 
@@ -149,11 +151,11 @@ with st.sidebar:
 process_button = st.sidebar.button("Process PDFs")
 
 st.sidebar.title("Mini Study Buddy!") #  AI Assistant
-st.sidebar.markdown("Upload PDFs, Summarize, Chat, and Generate questions.")
+st.sidebar.markdown("Upload PDFs, Summarize, Chat, and 'Generate questions'.")
 # ------------------------------------------------------------------------------- #
 
 # Main Page
-st.header("Summarise and Q&A :books:")
+st.header("Summarise! and Q&A :books:")
 st.divider()
 # ------------------------------------------------------------------------------- # 
 
@@ -216,16 +218,16 @@ st.divider()
 # --------------------------------------------------------------------------------------------------------------------------------------------------- #
 # DEBUG CONFIRMATION (TEMP)
 # =========================
-if st.session_state.pdf_text:
-        st.write("✅ Text extracted")
+# if st.session_state.pdf_text:
+#         st.write("✅ Text extracted")
 
-if st.session_state.chunks:
-        st.write("✅ Chunks ready")
+# if st.session_state.chunks:
+#         st.write("✅ Chunks ready")
 
-if st.session_state.embeddings is not None:
-    st.write("✅ Created embeddings")
+# if st.session_state.embeddings is not None:
+#     st.write("✅ Created embeddings")
 
-st.divider()
+# st.divider()
              
 # SUMMARISATION: --------------------------------------------------------------------------------------------------------------------------
 st.subheader("📝 Summarisation")
@@ -249,19 +251,39 @@ if summarise_button:
 
             # summary = " ".join(summaries)
 # --------------------------------------------------------------  
-            summarizer = pipeline("summarization", model="facebook/bart-large-cnn", device=-1)  # -1 for CPU
-            summary_text = summarizer(combined_text, max_length=250, min_length=80, do_sample=False)[0]['summary_text']
-            # Store summary in session state
-            # st.session_state.summary = summary
-            st.session_state.summary = summary_text
+            # summarizer = pipeline("summarization", model="facebook/bart-large-cnn", device=-1)  # -1 for CPU
+            # summary_text = summarizer(combined_text, max_length=250, min_length=80, do_sample=False)[0]['summary_text']
+            # # Store summary in session state
+            # # st.session_state.summary = summary
+            # st.session_state.summary = summary_text
 
             
+            # st.success("Summary generated ✅")
+            # # st.write(summary)
+            # st.write(summary_text)
+
+            # st.info("Summarization coming soon via Groq!")
+            response = client.chat.completions.create(
+                model="llama-3.3-70b-versatile",
+                messages=[
+                    {
+                        "role": "system",
+                        "content": "You are Zola, a helpful assistant that summarizes documents clearly and concisely."
+                    },
+                    {
+                        "role": "user",
+                        "content": f"Please summarize the following document:\n\n{combined_text}"
+                    }
+                ]
+            )
+            summary_text = response.choices[0].message.content
+            st.session_state.summary = summary_text
             st.success("Summary generated ✅")
-            # st.write(summary)
             st.write(summary_text)
+
             
     else:
-        st.warning("No text chunks found. Please uploadna PDF.")
+        st.warning("No text chunks found. Please upload a PDF.")
 
 st.divider()
 
