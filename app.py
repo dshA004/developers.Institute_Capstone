@@ -37,6 +37,8 @@ if "faiss_index" not in st.session_state:
 if "summary" not in st.session_state:
     st.session_state.summary = ""
 
+if "chat_history" not in st.session_state:
+    st.session_state.chat_history = []
 #------------------------------------------------------------------------------------- # 
 # TEXT EXTRACTION:
 def extract_pdfs(uploaded_files):
@@ -66,7 +68,12 @@ def get_chunks(text):
 # -------------------------------------------------------------------------------------------------
 # Create embeddings and FAISS index
 # device = "cpu"  # force CPU
-embedding_model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
+# embedding_model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
+@st.cache_resource
+def load_embedding_model():
+    return SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
+
+embedding_model = load_embedding_model()
 client = Groq()
 GROQ_MODEL = "llama-3.3-70b-versatile"
 
@@ -113,28 +120,12 @@ def search(query, top_k=5):
 
 # summarizer = get_summarizer()
 
-# ---------------------------------------------------------------------------------------------------------------- #
-# MOVED AT THE TOP:
-
-# if "pdf_text" not in st.session_state:
-#         st.session_state.pdf_text = ""
-
-# if "chunks" not in st.session_state:
-#         st.session_state.chunks = []
-
-# if "embeddings" not in st.session_state:
-#         st.session_state.embeddings = None
-
-# if "faiss_index" not in st.session_state:
-#     st.session_state.faiss_index = None
-
-# if "summary" not in st.session_state:
-#     st.session_state.summary = ""
 # ----------------------------------------------------------------------------------------------------------------- #
 
 # st.text_input("Ask a questions about the document!")
 
 with st.sidebar:
+    st.sidebar.title("Zola!") #  AI Assistant
     st.sidebar.title("Mini Study Buddy!") #  AI Assistant
     st.sidebar.markdown("Summarize, Chat and Generate questions.")
     st.header("Upload PDFs")
@@ -151,7 +142,7 @@ process_button = st.sidebar.button("Process PDFs")
 # ------------------------------------------------------------------------------- #
 
 # Main Page
-st.header("Zola your mini Study AI Assistant:books:")
+st.header("AI Assistant:books:")
 # ------------------------------------------------------------------------------- # 
 
 # # get pdf text
@@ -297,6 +288,16 @@ st.divider()
 # ---------------------------------------------------------------------------------------------------------- #
 # Chat 
 st.subheader("💬 Chat ")
+
+for message in st.session_state.chat_history:
+    if message["role"] == "user":
+        with st.chat_message("user"):
+            st.write(message["content"])
+    else:
+        with st.chat_message("assistant"):
+            st.write(message["content"])
+
+        
 user_question = st.text_input("Ask a question about the PDFs:",
                               key="active_question_input")
 ask_button = st.button("Ask", key="ask_button")
@@ -322,8 +323,12 @@ if ask_button:
 
             )
             answer = response.choices[0].message.content
-            st.write("### Zola's answer:")
-            st.write(answer)
+            
+            # Save to chat history
+            st.session_state.chat_history.append({"role": "user", "content": user_question})
+            st.session_state.chat_history.append({"role": "assistant", "content": answer})
+            
+            st.rerun()
     else:
         st.warning("Upload PDFs and process them first.")
 # if ask_button:
