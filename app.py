@@ -344,18 +344,36 @@ st.divider()
 
 # -------------------------------------------------------------------------------------------------- #
 # Generate own Questions 
-st.subheader("❓ Generated Questions")
-generate_button = st.button("Generate Questions")
+# st.subheader("❓ Generated Questions")
+# generate_button = st.button("Generate Questions")
 
-if generate_button:
-     if st.session_state.chunks:
-          with st.spinner("Zola is generating questions..."):
-               st.info("Questions coming soon!")
-     else:
-          st.warning("Please do upload a PDF and Process again!")
+# if generate_button:
+#      if st.session_state.chunks:
+#           with st.spinner("Zola is generating questions..."):
+#                st.info("Questions coming soon!")
+#      else:
+#           st.warning("Please do upload a PDF and Process again!")
 
 # ===> 
-# st.button("Generate Questions", disabled=True)
+
+combined_text = "\n".join(st.session_state.chunks)
+
+response = client.chat.completions.create(
+     model=GROQ_MODEL,
+    messages=[
+        {
+            "role": "system",
+            "content": "You are Zola, a helpful assistant that generates insightful questions based on a document."
+        },
+        {
+            "role": "user",
+            "content": f"Based on the following document, generate 5 thoughtful questions that test understanding of the key concepts:\n\n{combined_text}"
+        }
+    ]
+)
+questions = response.choices[0].message.content
+st.success("Questions generated ✅")
+st.write(questions)
 
 
 
