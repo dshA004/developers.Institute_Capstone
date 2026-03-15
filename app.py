@@ -9,9 +9,12 @@ import numpy as np
 # import torch
 from groq import Groq
 from langchain_groq import ChatGroq
+import time 
 
 
 load_dotenv()
+import os
+os.environ["HF_TOKEN"] = os.getenv("HF_TOKEN")
 # ----------------------------------------------------------------------------------- #
 
 st.set_page_config(
@@ -180,20 +183,43 @@ if process_button:
                 st.session_state.pdf_text = extracted_text
                 st.session_state.chunks = get_chunks(extracted_text)
 
+            # if extracted_text:
+            #     st.toast("Text extracted successfully")
+            # MAKE THE NOTIFICATION DISSAPEAR FASTER!
+            # if extracted_text:
+            #     msg1 = st.success("Text extracted successfully! ✅")
+            #     time.sleep(1)
+            #     msg1.empty()
+   
+
+
+            # else:
+            #     st.warning("No text found in the uploaded PDFs.")
+
+
+            # if st.session_state.chunks:
+            #     with st.spinner("Creating embeddings and FAISS vector database..."):
+            #         st.session_state.faiss_index, st.session_state.embeddings = create_faiss_index(st.session_state.chunks)
+            # # st.toast("Embeddings and FAISS index ready")
+            # msg2 = st.success("Embeddings and FAISS index ready! ✅")
+            # time.sleep(1)
+            # msg2.empty()
+        # else:
+        #     st.warning("Upload a PDF")
+
+
             if extracted_text:
-                st.success("Text extracted successfully")
+                if st.session_state.chunks:
+                    with st.spinner("Creating embeddings and FAISS vector database..."):
+                        st.session_state.faiss_index, st.session_state.embeddings = create_faiss_index(st.session_state.chunks)
+                msg1 = st.success("Text extracted successfully! ✅")
+                msg2 = st.success("Embeddings and FAISS index ready! ✅")
+                time.sleep(1.5)
+                msg1.empty()
+                msg2.empty()
             else:
                 st.warning("No text found in the uploaded PDFs.")
 
-
-            if st.session_state.chunks:
-                with st.spinner("Creating embeddings and FAISS vector database..."):
-                    st.session_state.faiss_index, st.session_state.embeddings = create_faiss_index(st.session_state.chunks)
-            st.success("Embeddings and FAISS index ready")
-
-
-        else:
-            st.warning("Upload a PDF")
 
 st.divider()
 # --------------------------------------------------------------------------------------------------------------------------------------------------- #
@@ -265,7 +291,7 @@ if summarise_button:
 
             
     else:
-        st.warning("No text chunks found. Please upload a PDF.")
+        st.warning("Please upload a PDF.")
 
 st.divider()
 
@@ -344,36 +370,36 @@ st.divider()
 
 # -------------------------------------------------------------------------------------------------- #
 # Generate own Questions 
-# st.subheader("❓ Generated Questions")
-# generate_button = st.button("Generate Questions")
 
-# if generate_button:
-#      if st.session_state.chunks:
-#           with st.spinner("Zola is generating questions..."):
-#                st.info("Questions coming soon!")
-#      else:
-#           st.warning("Please do upload a PDF and Process again!")
+st.subheader("❓ Questions ")
+generate_button = st.button("Generate questions")
+if generate_button:
+     if not st.session_state.chunks:
+                    st.warning("Please do upload a PDF and Process again!")
+     else:
+          with st.spinner("Questions are being generated..."):
+            #    st.info("Questions coming soon!")
 
-# ===> 
 
-combined_text = "\n".join(st.session_state.chunks)
+            combined_text = "\n".join(st.session_state.chunks)
 
-response = client.chat.completions.create(
-     model=GROQ_MODEL,
-    messages=[
-        {
-            "role": "system",
-            "content": "You are Zola, a helpful assistant that generates insightful questions based on a document."
-        },
-        {
-            "role": "user",
-            "content": f"Based on the following document, generate 5 thoughtful questions that test understanding of the key concepts:\n\n{combined_text}"
-        }
-    ]
-)
-questions = response.choices[0].message.content
-st.success("Questions generated ✅")
-st.write(questions)
+            response = client.chat.completions.create(
+                model=GROQ_MODEL,
+                messages=[
+                    {
+                        "role": "system",
+                        "content": "You are Zola, a helpful assistant that generates insightful questions based on a document."
+                    },
+                    {
+                        "role": "user",
+                        "content": f"Based on the following document, generate 5 thoughtful questions that test understanding of the key concepts:\n\n{combined_text}"
+                    }
+                ]
+            )
+
+            questions = response.choices[0].message.content
+            # st.success("Questions generated ✅")
+            st.write(questions)
 
 
 
