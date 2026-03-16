@@ -1,3 +1,4 @@
+# venv\Scripts\activate
 import streamlit as st
 from pypdf import PdfReader
 from dotenv import load_dotenv
@@ -214,7 +215,7 @@ if process_button:
                         st.session_state.faiss_index, st.session_state.embeddings = create_faiss_index(st.session_state.chunks)
                 msg1 = st.success("Text extracted successfully! ✅")
                 msg2 = st.success("Embeddings and FAISS index ready! ✅")
-                time.sleep(1.5)
+                time.sleep(1.0)
                 msg1.empty()
                 msg2.empty()
             else:
@@ -240,6 +241,8 @@ st.divider()
 st.subheader("📝 Summarisation")
 
 summarise_button = st.button("Generate Summary")
+
+       
 
 if summarise_button:
     if st.session_state.chunks:
@@ -286,7 +289,9 @@ if summarise_button:
             )
             summary_text = response.choices[0].message.content
             st.session_state.summary = summary_text
-            st.success("Summary generated ✅")
+            msg = st.success("Summary generated ✅")
+            time.sleep(1.5)
+            msg.empty()
             st.write(summary_text)
 
             
@@ -392,16 +397,26 @@ if generate_button:
                     },
                     {
                         "role": "user",
-                        "content": f"Based on the following document, generate 5 thoughtful questions that test understanding of the key concepts:\n\n{combined_text}"
+                        "content": f"Based on the following document, generate 5 thoughtful questions that test understanding of the key concepts. For each question, provide the answer too. Format your response exactly like this:\n\nQ1: question here\nA1: answer here\n\nQ2: question here\nA2: answer here\n\nDocument:\n\n{combined_text}"
                     }
                 ]
             )
 
             questions = response.choices[0].message.content
-            # st.success("Questions generated ✅")
-            st.write(questions)
+            msg = st.success("Questions generated ✅")
+            time.sleep(1.5)
+            msg.empty()
+            # st.write(questions)
+            
+            lines = questions.strip().split("\n\n")
 
+            for pair in lines:
+                 lines_in_pair = pair.strip().split("\n")
+                 if len(lines_in_pair) >=2:
+                      question = lines_in_pair[0]
+                      answer = lines_in_pair[1]
 
-
-
-
+                      st.write(f"**{question}**")
+                      with st.expander("Show answer 👁️"):
+                           st.write(answer)
+                      st.divider()
