@@ -339,20 +339,33 @@ if ask_button:
             results = search(user_question)
             context = "\n".join(results)
 
-            response = client.chat.completions.create(
-                 model=GROQ_MODEL,
-                 messages=[
-                      {
-                        "role": "system",
-                        "content": "You are Zola, a helpful assistant that answers questions based on the provided document context."
-                    },
-                    {
-                        "role": "user",
-                        "content": f"Based on the following context:\n\n{context}\n\nAnswer this question: {user_question}"
-                    }
-                 ]
+            # Build messages with chat history
+            messages = [
+                {
+                    "role": "system",
+                    "content": "You are Zola, a helpful assistant that answers questions based on the provided document context."
+                }
+            ]
 
+            # Add chat history
+            for msg in st.session_state.chat_history:
+                messages.append({
+                    "role": msg["role"],
+                    "content": msg["content"]
+                })
+
+            # Add current question
+            messages.append({
+                "role": "user",
+                "content": f"Based on the following context:\n\n{context}\n\nAnswer this question: {user_question}"
+            })
+
+            response = client.chat.completions.create(
+                model=GROQ_MODEL,
+                messages=messages
             )
+
+
             answer = response.choices[0].message.content
             
             # Save to chat history
@@ -417,6 +430,6 @@ if generate_button:
                       answer = lines_in_pair[1]
 
                       st.write(f"**{question}**")
-                      with st.expander("Show answer 👁️"):
+                      with st.expander("Answer "):
                            st.write(answer)
                       st.divider()
