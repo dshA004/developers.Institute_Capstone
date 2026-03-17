@@ -320,6 +320,10 @@ st.divider()
 # Chat 
 st.subheader("💬 Chat ")
 
+# if st.button("Clear Chat 🗑️"):
+#      st.session_state.chat_history = []
+#      st.rerun()
+
 for message in st.session_state.chat_history:
     if message["role"] == "user":
         with st.chat_message("user"):
@@ -332,6 +336,10 @@ for message in st.session_state.chat_history:
 user_question = st.text_input("Ask a question about the PDFs:",
                               key="active_question_input")
 ask_button = st.button("Ask", key="ask_button")
+
+if st.button("Clear Chat 🗑️"):
+     st.session_state.chat_history = []
+     st.rerun()
               
 if ask_button:
     if st.session_state.chunks and st.session_state.embeddings is not None:
@@ -375,6 +383,7 @@ if ask_button:
             st.rerun()
     else:
         st.warning("Upload PDFs and process them first.")
+       
 # if ask_button:
 #               if uploaded_files:
 #                  st.info("Processing, please wait!")
