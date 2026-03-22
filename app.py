@@ -211,13 +211,11 @@ if process_button:
 
             if extracted_text:
                 if st.session_state.chunks:
-                    with st.spinner("Creating embeddings and FAISS vector database..."):
+                    with st.spinner("Please wait..."):
                         st.session_state.faiss_index, st.session_state.embeddings = create_faiss_index(st.session_state.chunks)
                 msg1 = st.success("Text extracted successfully! ✅")
-                msg2 = st.success("Embeddings and FAISS index ready! ✅")
                 time.sleep(1.0)
                 msg1.empty()
-                msg2.empty()
             else:
                 st.warning("No text found in the uploaded PDFs.")
 
@@ -278,6 +276,7 @@ if summarise_button:
             # st.write(summary_text)
 
             # st.info("Summarization coming soon via Groq!")
+        try:
             response = client.chat.completions.create(
                 # model="llama-3.3-70b-versatile",
                 model=GROQ_MODEL,
@@ -298,8 +297,9 @@ if summarise_button:
             time.sleep(1.5)
             msg.empty()
             st.write(summary_text)
+        except Exception as e:
+             st.error("⚠️ Zola is unavailable right now. Please try again!")
 
-            
     else:
         st.warning("Please upload a PDF.")
 
@@ -347,7 +347,9 @@ if st.button("Clear Chat 🗑️"):
      st.rerun()
               
 if ask_button:
-    if st.session_state.chunks and st.session_state.embeddings is not None:
+    if not user_question.strip():
+         st.warning("⚠️ Please type a question first!")
+    elif st.session_state.chunks and st.session_state.embeddings is not None:
         with st.spinner("Searching for answer..."):
             results = search(user_question)
             context = "\n".join(results)
@@ -379,19 +381,20 @@ if ask_button:
                 "content": f"Based on the following context:\n\n{context}\n\nAnswer this question: {user_question}"
             })
 
+
+        try:
             response = client.chat.completions.create(
                 model=GROQ_MODEL,
                 messages=messages
             )
-
-
             answer = response.choices[0].message.content
             
             # Save to chat history
             st.session_state.chat_history.append({"role": "user", "content": user_question})
             st.session_state.chat_history.append({"role": "assistant", "content": answer})
-            
             st.rerun()
+        except Exception as e:
+             st.error("⚠️ Zola is unavailable right now. Please try again!")
     else:
         st.warning("Upload PDFs and process them first.")
        
@@ -427,35 +430,34 @@ if generate_button:
                time.sleep(2)
                msg.empty()
 
-            response = client.chat.completions.create(
-                model=GROQ_MODEL,
-                messages=[
-                    {
-                        "role": "system",
-                        "content": "You are Zola, a helpful assistant that generates insightful questions based on a document."
-                    },
-                    {
-                        "role": "user",
-                        "content": f"Based on the following document, generate {num_questions} thoughtful questions that test understanding of the key concepts. For each question, provide the answer too. Format your response exactly like this:\n\nQ1: question here\nA1: answer here\n\nQ2: question here\nA2: answer here\n\nDocument:\n\n{combined_text}"
-                    }
-                ]
-            )
-
-            questions = response.choices[0].message.content
-            msg = st.success("Questions generated ✅")
-            time.sleep(1.5)
-            msg.empty()
-            # st.write(questions)
             
-            lines = questions.strip().split("\n\n")
-
-            for pair in lines:
-                 lines_in_pair = pair.strip().split("\n")
-                 if len(lines_in_pair) >=2:
-                      question = lines_in_pair[0]
-                      answer = lines_in_pair[1]
-
-                      st.write(f"**{question}**")
-                      with st.expander("Answer "):
-                           st.write(answer)
-                      st.divider()
+            try:
+                response = client.chat.completions.create(
+                    model=GROQ_MODEL,
+                    messages=[
+                        {
+                            "role": "system",
+                            "content": "You are Zola, a helpful assistant that generates insightful questions based on a document."
+                        },
+                        {
+                            "role": "user",
+                            "content": f"Based on the following document, generate {num_questions} thoughtful questions that test understanding of the key concepts. For each question, provide the answer too. Format your response exactly like this:\n\nQ1: question here\nA1: answer here\n\nQ2: question here\nA2: answer here\n\nDocument:\n\n{combined_text}"
+                        }
+                    ]
+                )
+                questions = response.choices[0].message.content
+                msg = st.success("Questions generated ✅")
+                time.sleep(1.5)
+                msg.empty()
+                lines = questions.strip().split("\n\n")
+                for pair in lines:
+                    lines_in_pair = pair.strip().split("\n")
+                    if len(lines_in_pair) >= 2:
+                        question = lines_in_pair[0]
+                        answer = lines_in_pair[1]
+                        st.write(f"**{question}**")
+                        with st.expander("Answer "):
+                            st.write(answer)
+                        st.divider()
+            except Exception as e:
+                st.error("⚠️ Zola is unavailable right now. Please try again!")
