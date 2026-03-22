@@ -249,6 +249,11 @@ if summarise_button:
         with st.spinner("Summary is being generated..."):
             # Combine all chunks into one text
             combined_text = "\n".join(st.session_state.chunks)
+            combined_text = combined_text[:8000]
+            if len("\n".join(st.session_state.chunks)) > 8000:
+               msg = st.warning("⚠️ Your PDF is too large, only the first part will be processed.")
+               time.sleep(2)
+               msg.empty()
             
 # Use Bart - huggingface summarisation -
 # -----------------------------------------------------
@@ -346,6 +351,12 @@ if ask_button:
         with st.spinner("Searching for answer..."):
             results = search(user_question)
             context = "\n".join(results)
+            context = context[:8000]
+            if len("\n".join(st.session_state.chunks)) > 8000:
+                msg = st.warning("⚠️ Your PDF is too large, only the first part will be processed.")
+                time.sleep(2)
+                msg.empty()
+
 
             # Build messages with chat history
             messages = [
@@ -399,6 +410,7 @@ st.divider()
 # Generate own Questions 
 
 st.subheader("❓ Questions ")
+num_questions = st.slider("How many questions?", min_value=1, max_value=10, value=5)
 generate_button = st.button("Generate questions")
 if generate_button:
      if not st.session_state.chunks:
@@ -409,6 +421,11 @@ if generate_button:
 
 
             combined_text = "\n".join(st.session_state.chunks)
+            combined_text = combined_text[:8000]
+            if len("\n".join(st.session_state.chunks)) > 8000:
+               msg = st.warning("⚠️ Your PDF is too large, only the first part will be processed.")
+               time.sleep(2)
+               msg.empty()
 
             response = client.chat.completions.create(
                 model=GROQ_MODEL,
@@ -419,7 +436,7 @@ if generate_button:
                     },
                     {
                         "role": "user",
-                        "content": f"Based on the following document, generate 5 thoughtful questions that test understanding of the key concepts. For each question, provide the answer too. Format your response exactly like this:\n\nQ1: question here\nA1: answer here\n\nQ2: question here\nA2: answer here\n\nDocument:\n\n{combined_text}"
+                        "content": f"Based on the following document, generate {num_questions} thoughtful questions that test understanding of the key concepts. For each question, provide the answer too. Format your response exactly like this:\n\nQ1: question here\nA1: answer here\n\nQ2: question here\nA2: answer here\n\nDocument:\n\n{combined_text}"
                     }
                 ]
             )
