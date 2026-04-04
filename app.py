@@ -95,8 +95,6 @@ h1, h2, h3 {
     border-bottom: 2px solid #534AB7 !important;
 }
             
-
-
 /* ---- MAIN PAGE BUTTONS ---- */
 .stButton > button {
     background-color: #534AB7 !important;
@@ -109,6 +107,78 @@ h1, h2, h3 {
 
 .stButton > button:hover {
     background-color: #3C3489 !important;
+}
+            
+            # ------ Style the text input  ----------- #
+            
+/* ---- TEXT INPUT ---- */
+.stTextInput > div > div > input {
+    background-color: #1a1a18 !important;
+    color: #D3D1C7 !important;
+    border: 0.5px solid #5F5E5A !important;
+    border-radius: 20px !important;
+    padding: 8px 14px !important;
+}
+
+/* Input placeholder text */
+.stTextInput > div > div > input::placeholder {
+    color: #5F5E5A !important;
+}
+            
+            # --------------- Style the file uploader -------------------- #
+
+/* ---- FILE UPLOADER ---- */
+[data-testid="stFileUploader"] {
+    background-color: #1a1a18 !important;
+    border: 0.5px dashed #5F5E5A !important;
+    border-radius: 8px !important;
+    padding: 8px !important;
+}
+
+/* Uploader text */
+[data-testid="stFileUploader"] label {
+    color: #888780 !important;
+}
+
+/* Uploader button */
+[data-testid="stFileUploader"] button {
+    background-color: #534AB7 !important;
+    color: #EEEDFE !important;
+    border: none !important;
+    border-radius: 8px !important;
+}
+            
+
+            # ------------------------ Style the divider and spinner --------------------- #
+
+/* ---- DIVIDER ---- */
+hr {
+    border-color: #444441 !important;
+    margin: 10px 0 !important;
+}
+
+/* ---- SPINNER ---- */
+.stSpinner > div {
+    border-top-color: #534AB7 !important;
+}
+
+/* ---- SUCCESS / WARNING / ERROR MESSAGES ---- */
+.stSuccess {
+    background-color: #085041 !important;
+    color: #E1F5EE !important;
+    border-radius: 8px !important;
+}
+
+.stWarning {
+    background-color: #633806 !important;
+    color: #FAEEDA !important;
+    border-radius: 8px !important;
+}
+
+.stError {
+    background-color: #791F1F !important;
+    color: #FCEBEB !important;
+    border-radius: 8px !important;
 }
 </style>
 """, unsafe_allow_html=True)
