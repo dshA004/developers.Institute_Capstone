@@ -25,6 +25,95 @@ st.set_page_config(
         )
 
 # ------------------------------------------------------------------------------------- #
+st.set_page_config(
+        page_title="Mini PDF AI Assistant",
+        page_icon=":books:", 
+        layout="wide"
+        )
+
+
+# ----------------------------------------------------------------------------------------#
+st.markdown("""
+<style>
+/* Makes the entire app background dark */
+html, body, [data-testid="stAppViewContainer"] {
+    background-color: #2C2C2A !important;
+    color: #D3D1C7 !important;
+}
+
+/* ---- SIDEBAR ---- */
+[data-testid="stSidebar"] {
+    background-color: #1a1a18 !important;
+    border-right: 0.5px solid #444441 !important;
+}
+
+/* Sidebar text */
+[data-testid="stSidebar"] p,
+[data-testid="stSidebar"] label {
+    color: #D3D1C7 !important;
+}
+
+/* Sidebar button */
+[data-testid="stSidebar"] .stButton > button {
+    background-color: #534AB7 !important;
+    color: #EEEDFE !important;
+    border: none !important;
+    border-radius: 8px !important;
+    width: 100% !important;
+    font-weight: 500 !important;
+}
+            
+/* ---- HEADER ---- */
+h1, h2, h3 {
+    text-align: center !important;
+    color: #D3D1C7 !important;
+}
+            
+/* ---- TABS ---- */
+/* Center the tab bar */
+[data-testid="stTabs"] [role="tablist"] {
+    justify-content: center !important;
+}
+
+/* Default tab text */
+[data-testid="stTabs"] button[role="tab"] {
+    color: #888780 !important;
+    font-size: 14px !important;
+    background-color: transparent !important;
+}
+            
+/* ---- SIDEBAR TITLES ---- */
+[data-testid="stSidebar"] h1,
+[data-testid="stSidebar"] h2,
+[data-testid="stSidebar"] h3 {
+    text-align: left !important;
+}
+
+/* Active/selected tab */
+[data-testid="stTabs"] button[role="tab"][aria-selected="true"] {
+    color: #CECBF6 !important;
+    border-bottom: 2px solid #534AB7 !important;
+}
+            
+
+
+/* ---- MAIN PAGE BUTTONS ---- */
+.stButton > button {
+    background-color: #534AB7 !important;
+    color: #EEEDFE !important;
+    border: none !important;
+    border-radius: 8px !important;
+    font-weight: 500 !important;
+    padding: 8px 20px !important;
+}
+
+.stButton > button:hover {
+    background-color: #3C3489 !important;
+}
+</style>
+""", unsafe_allow_html=True)
+# -------------------------------------------------------------------------------------#
+
 # Initialization of state:
 if "pdf_text" not in st.session_state:
     st.session_state.pdf_text = ""
@@ -132,7 +221,7 @@ with st.sidebar:
     st.sidebar.title("Zola!") #  AI Assistant
     st.sidebar.title("Mini Study Buddy!") #  AI Assistant
     st.sidebar.markdown("Summarize, Chat and Generate questions.")
-    st.header("Upload PDFs")
+    st.divider()
 
     uploaded_files = st.file_uploader(
                             "Upload PDF",
