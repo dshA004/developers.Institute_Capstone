@@ -397,7 +397,12 @@ st.divider()
              
 # SUMMARISATION: --------------------------------------------------------------------------------------------------------------------------
 with tab1:
-    st.subheader("📝 Summarisation")
+    st.markdown("""
+<div style="background:#3C3489; padding:14px 20px; border-radius:8px; margin-bottom:16px; text-align:center;">
+    <p style="margin:0; color:#CECBF6; font-size:15px; font-weight:500;">📝 Summarisation</p>
+    <span style="color:#AFA9EC; font-size:12px;">Generate a summary of your uploaded document</span>
+</div>
+""", unsafe_allow_html=True)
 
     summarise_button = st.button("Generate Summary")
 
@@ -470,7 +475,13 @@ with tab1:
 # ---------------------------------------------------------------------------------------------------------- #
 # Chat 
 with tab2:
-    st.subheader("💬 Chat ")
+    st.markdown("""
+    <div style="background:#3C3489; padding:14px 20px; border-radius:8px; 
+    margin-bottom:16px; text-align:center;">
+        <p style="margin:0; color:#CECBF6; font-size:15px; font-weight:500;">💬 Chat</p>
+        <span style="color:#AFA9EC; font-size:12px;">Ask Zola anything about your document</span>
+    </div>
+    """, unsafe_allow_html=True)
 
     # if st.button("Clear Chat 🗑️"):
     #      st.session_state.chat_history = []
@@ -554,7 +565,13 @@ with tab2:
 # Generate own Questions 
 
 with tab3:
-    st.subheader("❓ Questions ")
+    st.markdown("""
+    <div style="background:#3C3489; padding:14px 20px; border-radius:8px; 
+    margin-bottom:16px; text-align:center;">
+        <p style="margin:0; color:#CECBF6; font-size:15px; font-weight:500;">🎴 Flashcards</p>
+        <span style="color:#AFA9EC; font-size:12px;">Tap a card to reveal the answer</span>
+    </div>
+    """, unsafe_allow_html=True)
     num_questions = st.slider("How many questions?", min_value=1, max_value=10, value=5)
     generate_button = st.button("Generate questions")
     if generate_button:
