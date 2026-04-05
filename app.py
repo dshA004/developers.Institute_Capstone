@@ -17,14 +17,6 @@ load_dotenv()
 import os
 os.environ["HF_TOKEN"] = os.getenv("HF_TOKEN")
 # ----------------------------------------------------------------------------------- #
-
-st.set_page_config(
-        page_title="Mini PDF AI Assistant",
-        page_icon=":books:", 
-        layout="wide"
-        )
-
-# ------------------------------------------------------------------------------------- #
 st.set_page_config(
         page_title="Mini PDF AI Assistant",
         page_icon=":books:", 
@@ -95,6 +87,18 @@ h1, h2, h3 {
     border-bottom: 2px solid #534AB7 !important;
 }
             
+/* Fix the tab underline color */
+[data-testid="stTabs"] [data-baseweb="tab-highlight"] {
+    background-color: #534AB7 !important;
+}
+
+/* ---- FIX TAB VISIBILITY ---- */
+[data-baseweb="tab-list"] {
+    background-color: #1a1a18 !important;
+    padding: 4px 0 !important;
+}
+
+          
 /* ---- MAIN PAGE BUTTONS ---- */
 .stButton > button {
     background-color: #534AB7 !important;
@@ -109,7 +113,6 @@ h1, h2, h3 {
     background-color: #3C3489 !important;
 }
             
-            # ------ Style the text input  ----------- #
             
 /* ---- TEXT INPUT ---- */
 .stTextInput > div > div > input {
@@ -125,7 +128,7 @@ h1, h2, h3 {
     color: #5F5E5A !important;
 }
             
-            # --------------- Style the file uploader -------------------- #
+           
 
 /* ---- FILE UPLOADER ---- */
 [data-testid="stFileUploader"] {
@@ -149,7 +152,6 @@ h1, h2, h3 {
 }
             
 
-            # ------------------------ Style the divider and spinner --------------------- #
 
 /* ---- DIVIDER ---- */
 hr {
@@ -180,6 +182,38 @@ hr {
     color: #FCEBEB !important;
     border-radius: 8px !important;
 }
+
+/* ---- CHAT MESSAGES ---- */
+
+/* Message bubble */
+[data-testid="stChatMessage"] {
+    background-color: #444441 !important;
+    border-radius: 12px !important;
+    padding: 10px 14px !important;
+    margin: 6px 0 !important;
+    border: none !important;
+}
+
+/* Message text */
+[data-testid="stChatMessage"] p {
+    color: #D3D1C7 !important;
+    font-size: 14px !important;
+    line-height: 1.5 !important;
+    margin: 0 !important;
+}
+
+/* Hide the avatars */
+[data-testid="stChatMessageAvatarUser"],
+[data-testid="stChatMessageAvatarAssistant"] {
+    display: none !important;
+}
+            
+/* ---- SUMMARY CARD ---- */
+[data-testid="stMarkdownContainer"] div {
+    color: #B4B2A9 !important;
+    font-size: 14px !important;
+    line-height: 1.7 !important;
+}
 </style>
 """, unsafe_allow_html=True)
 # -------------------------------------------------------------------------------------#
@@ -187,7 +221,7 @@ hr {
 # Initialization of state:
 if "pdf_text" not in st.session_state:
     st.session_state.pdf_text = ""
-
+2
 if "chunks" not in st.session_state:
     st.session_state.chunks = []
 
@@ -432,7 +466,13 @@ with tab1:
                     msg = st.success("Summary generated ✅")
                     time.sleep(1.5)
                     msg.empty()
-                    st.write(summary_text)
+                    st.markdown(f"""
+<div style="background:#1a1a18; border:0.5px solid #444441; 
+border-radius:8px; padding:16px 18px; color:#B4B2A9; 
+font-size:14px; line-height:1.7;">
+    {summary_text}
+</div>
+""", unsafe_allow_html=True)
                 except Exception as e:
                     st.error("⚠️ Zola is unavailable right now. Please try again!")
         else:
