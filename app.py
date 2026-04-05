@@ -11,6 +11,7 @@ import numpy as np
 from groq import Groq
 # from langchain_groq import ChatGroq
 import time 
+import re
 
 
 load_dotenv()
@@ -183,15 +184,23 @@ hr {
     border-radius: 8px !important;
 }
 
-/* ---- CHAT MESSAGES ---- */
+  /* Sidebar titles size */
+[data-testid="stSidebar"] h1 {
+    font-size: 22px !important;
+} 
 
-/* Message bubble */
+/* ---- CHAT ---- */
 [data-testid="stChatMessage"] {
-    background-color: #444441 !important;
-    border-radius: 12px !important;
+    background-color: #1a1a18 !important;
+    border-radius: 0 !important;
+    border-left: 3px solid #534AB7 !important;
     padding: 10px 14px !important;
     margin: 6px 0 !important;
-    border: none !important;
+}
+
+/* User message - green left border */
+[data-testid="stChatMessage"]:has([data-testid="stChatMessageAvatarUser"]) {
+    border-left: 3px solid #1D9E75 !important;
 }
 
 /* Message text */
@@ -199,15 +208,13 @@ hr {
     color: #D3D1C7 !important;
     font-size: 14px !important;
     line-height: 1.5 !important;
-    margin: 0 !important;
 }
 
-/* Hide the avatars */
+/* Hide avatars */
 [data-testid="stChatMessageAvatarUser"],
 [data-testid="stChatMessageAvatarAssistant"] {
     display: none !important;
 }
-            
 /* ---- SUMMARY CARD ---- */
 [data-testid="stMarkdownContainer"] div {
     color: #B4B2A9 !important;
@@ -221,7 +228,7 @@ hr {
 # Initialization of state:
 if "pdf_text" not in st.session_state:
     st.session_state.pdf_text = ""
-2
+
 if "chunks" not in st.session_state:
     st.session_state.chunks = []
 
@@ -322,8 +329,8 @@ def search(query, top_k=5):
 # st.text_input("Ask a questions about the document!")
 
 with st.sidebar:
-    st.sidebar.title("Zola!") #  AI Assistant
-    st.sidebar.title("Mini Study Buddy!") #  AI Assistant
+    st.sidebar.markdown("## Zola!") #  AI Assistant
+    st.sidebar.markdown("#### Mini Study Buddy!") #  AI Assistant
     st.sidebar.markdown("Summarize, Chat and Generate questions.")
     st.divider()
 
@@ -335,11 +342,11 @@ with st.sidebar:
 
     # if st.button("Process"):
     #       with st.spinner("Proccessing"):
-process_button = st.sidebar.button("Process PDFs")
+    process_button = st.sidebar.button("Process PDFs")
 # ------------------------------------------------------------------------------- #
 
 # Main Page
-st.header("AI Assistant:books:")
+# st.header("AI Assistant:books:")
 tab1, tab2, tab3 = st.tabs(["📝 Summary", "💬 Chat", "🎴 Flashcards"])
 # ------------------------------------------------------------------------------- # 
 
@@ -414,7 +421,7 @@ if process_button:
                 st.warning("No text found in the uploaded PDFs.")
 
 
-st.divider()
+# st.divider()
 # --------------------------------------------------------------------------------------------------------------------------------------------------- #
 # DEBUG CONFIRMATION (TEMP)
 # =========================
@@ -538,11 +545,13 @@ with tab2:
             
     user_question = st.text_input("Ask a question about the PDFs:",
                                 key="active_question_input")
-    ask_button = st.button("Ask", key="ask_button")
-
-    if st.button("Clear Chat 🗑️"):
-        st.session_state.chat_history = []
-        st.rerun()
+    col1, col2 = st.columns([1, 5])
+    with col1:
+        ask_button = st.button("Ask", key="ask_button")
+    with col2:
+       if st.button("Clear Chat 🗑️"):
+          st.session_state.chat_history = []
+          st.rerun()
                 
     if ask_button:
         if not user_question.strip():
@@ -599,7 +608,6 @@ with tab2:
     # ===> 
     # st.subheader("💬 Chat")
     # st.text_input("Ask a question about the PDFs:", disabled=True)
-    st.divider()
 
 # -------------------------------------------------------------------------------------------------- #
 # Generate own Questions 
@@ -656,7 +664,7 @@ with tab3:
 
                     questions_text = response.choices[0].message.content
 
-                    import re
+
                     pairs = re.findall(r'(Q\d+:.*?)\n(A\d+:.*?)(?=\nQ\d+:|\Z)', questions_text, re.DOTALL)
 
                     if pairs:
