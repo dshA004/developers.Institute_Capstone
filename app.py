@@ -215,6 +215,15 @@ hr {
 [data-testid="stChatMessageAvatarAssistant"] {
     display: none !important;
 }
+
+/* ---- TEXT INPUT LABEL ---- */
+.stTextInput label {
+    color: #888780 !important;
+    font-size: 14px !important;
+    font-weight: 400 !important;
+}
+            
+                      
 /* ---- SUMMARY CARD ---- */
 [data-testid="stMarkdownContainer"] div {
     color: #B4B2A9 !important;
@@ -542,17 +551,20 @@ with tab2:
             with st.chat_message("assistant"):
                 st.write(message["content"])
 
-            
-    user_question = st.text_input("Ask a question about the PDFs:",
-                                key="active_question_input")
-    col1, col2 = st.columns([1, 5])
+    ask_button = False  
+    col1, col2, col3 = st.columns([6, 2, 2])
     with col1:
-        ask_button = st.button("Ask", key="ask_button")
+        user_question = st.text_input("", 
+                                    placeholder="Ask a question about the PDFs...",
+                                    key="active_question_input",
+                                    label_visibility="collapsed")
     with col2:
-       if st.button("Clear Chat 🗑️"):
-          st.session_state.chat_history = []
-          st.rerun()
-                
+        ask_button = st.button("Ask", key="ask_button")
+    with col3:
+        if st.button("Clear 🗑️"):
+            st.session_state.chat_history = []
+            st.rerun()
+            
     if ask_button:
         if not user_question.strip():
             st.warning("⚠️ Please type a question first!")
@@ -598,7 +610,7 @@ with tab2:
                 st.rerun()
             except Exception as e:
                 st.error("⚠️ Zola is unavailable right now. Please try again!")
-        
+            
     # if ask_button:
     #               if uploaded_files:
     #                  st.info("Processing, please wait!")
