@@ -198,9 +198,9 @@ hr {
     margin: 6px 0 !important;
 }
 
-/* User message - green left border */
+/* User message - light grey left border */
 [data-testid="stChatMessage"]:has([data-testid="stChatMessageAvatarUser"]) {
-    border-left: 3px solid #1D9E75 !important;
+    border-left: 3px solid #99A5B1 !important;
 }
 
 /* Message text */
@@ -226,9 +226,15 @@ hr {
                       
 /* ---- SUMMARY CARD ---- */
 [data-testid="stMarkdownContainer"] div {
-    color: #B4B2A9 !important;
+    color: #B5B5B5 !important;
     font-size: 14px !important;
     line-height: 1.7 !important;
+}
+            
+/* ---- INPUT FOCUS COLOR ---- */
+.stTextInput > div > div > input:focus {
+    border-color: #534AB7 !important;
+    box-shadow: 0 0 0 1px #534AB7 !important;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -356,7 +362,7 @@ with st.sidebar:
 
 # Main Page
 # st.header("AI Assistant:books:")
-tab1, tab2, tab3 = st.tabs(["📝 Summary", "💬 Chat", "🎴 Flashcards"])
+tab1, tab2, tab3 = st.tabs(["📝 Summary", "💬 Chat", "❓ Questions"])
 # ------------------------------------------------------------------------------- # 
 
 # # get pdf text
@@ -628,7 +634,7 @@ with tab3:
     st.markdown("""
     <div style="background:#3C3489; padding:14px 20px; border-radius:8px; 
     margin-bottom:16px; text-align:center;">
-        <p style="margin:0; color:#CECBF6; font-size:15px; font-weight:500;">🎴 Flashcards</p>
+        <p style="margin:0; color:#CECBF6; font-size:15px; font-weight:500;">❓ Questions</p>
         <span style="color:#AFA9EC; font-size:12px;">Tap a card to reveal the answer</span>
     </div>
     """, unsafe_allow_html=True)
