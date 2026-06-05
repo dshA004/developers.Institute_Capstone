@@ -2,10 +2,10 @@ ZOLA — Mini PDF AI Study Buddy
 
 👤 About
 
-Student: Bissoonauth Deeshi
-School: Developers.Institute Mauritius
-Class: GenAI & ML 
-Project: Capstone Project 2025
+- Student: Bissoonauth Deeshi
+- School: Developers.Institute Mauritius
+- Class: GenAI & ML 
+- Project: Capstone Project 2025
 
 
 🚀 Live App
